@@ -50,12 +50,13 @@ export async function POST(request: Request) {
     return respond('Impossible de réserver une génération.', 400)
   }
 
+  const generationId = row.id
   const admin = adminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, serverKey, {
     auth: { autoRefreshToken: false, persistSession: false }
   })
   async function finalize(success: boolean, text: string | null, usage?: Output['usage']) {
     const { data: done, error: finalizeError } = await admin.rpc('finish_ai_generation', {
-      p_id: row.id, p_succeeded: success, p_output: text,
+      p_id: generationId, p_succeeded: success, p_output: text,
       p_model: success ? model : null,
       p_input_tokens: usage?.input_tokens || 0,
       p_output_tokens: usage?.output_tokens || 0
