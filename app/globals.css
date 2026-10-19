@@ -58,3 +58,13 @@
 .price-card .price-features svg,.account-plan svg{flex:none}
 .account-plan>div{align-items:flex-start;line-height:1.5}
 .account-plan .plan-state{font-weight:700}
+
+/* V1.3 : historique des contenus IA */
+.ai-history{display:grid;gap:0;margin-top:16px}
+.ai-history-entry{padding:17px 0;border-top:1px solid var(--border)}
+.ai-history-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ai-history-title strong{font-size:13px;overflow-wrap:anywhere}
+.ai-history-entry small{display:block;margin:4px 0 12px;color:#8b98aa}
+.ai-history-entry summary{cursor:pointer;color:#214e84;font-size:12px;font-weight:700}
+.ai-history-entry .record-entry-detail{margin-top:12px}
+.ai-history-entry details{max-width:100%}
