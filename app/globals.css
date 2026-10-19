@@ -51,3 +51,10 @@
   .record-action{min-height:40px}
   .record-entry-header{flex-wrap:wrap}
 }
+
+/* V1.2 : affichage transparent des offres */
+.price-card>strong,.account-plan>strong{overflow-wrap:anywhere}
+.price-card .price-features>div{align-items:flex-start;line-height:1.5}
+.price-card .price-features svg,.account-plan svg{flex:none}
+.account-plan>div{align-items:flex-start;line-height:1.5}
+.account-plan .plan-state{font-weight:700}

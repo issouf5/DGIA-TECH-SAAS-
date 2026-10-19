@@ -1,11 +1,19 @@
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { buildPlanCatalog, type PlanRow, type PlanLimitRow } from '@/lib/pricing'
 import { ArrowRight, ArrowUpRight, Bot, Check, ChevronRight, Cpu, Globe2, LockKeyhole, Network, ShieldCheck, Sparkles, Workflow, Zap } from 'lucide-react'
 const modules=[
   {number:'01',icon:Network,title:'DGIA IT Solutions',subtitle:'Assistance & Infrastructure',description:'Centralisez vos demandes d’assistance informatique, réseau, Wi-Fi et MikroTik.',tags:['Support IT','Wi-Fi & Réseau','MikroTik'],color:'blue'},
   {number:'02',icon:Bot,title:'DGIA AI Tools',subtitle:'Intelligence appliquée',description:'Construisez des prompts structurés pour gagner du temps dans votre travail.',tags:['Prompts','Contenu','Productivité'],color:'violet'},
   {number:'03',icon:Workflow,title:'DGIA Automation',subtitle:'Organisation & Processus',description:'Préparez vos projets d’automatisation et organisez vos processus professionnels.',tags:['Processus','Projets','Organisation'],color:'green'}
 ]
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient()
+  const [{ data: plans }, { data: limits }] = await Promise.all([
+    supabase.from('plans').select('code,label,price_xof,enabled'),
+    supabase.from('plan_module_limits').select('plan_code,module_code,quota_per_24h')
+  ])
+  const catalog = buildPlanCatalog(plans as PlanRow[] | null, limits as PlanLimitRow[] | null)
   return <main className="landing">
     <header className="site-header"><div className="site-header-inner">
       <Link href="/" className="brand"><span className="brand-mark">D✦</span><span className="brand-word"><strong>DGIA <em>TECH</em></strong><small>SAAS PLATFORM</small></span></Link>
@@ -29,12 +37,13 @@ export default function HomePage() {
       <div className="solution-grid">{modules.map(m=>{const Icon=m.icon;return <article className="solution-card" key={m.number}><div className="solution-top"><span className={'solution-icon '+m.color}><Icon size={27}/></span><span className="solution-number">/ {m.number}</span></div><div className="solution-subtitle">{m.subtitle}</div><h3>{m.title}</h3><p>{m.description}</p><div className="tag-row">{m.tags.map(t=><span key={t}>{t}</span>)}</div><Link href="/login?mode=signup">Découvrir le module <ArrowUpRight size={18}/></Link></article>})}</div>
     </section>
     <section className="why-section" id="apropos"><div className="why-inner"><div><div className="eyebrow">POURQUOI DGIA TECH SAAS ?</div><h2>La technologie doit<br/><em>simplifier votre quotidien.</em></h2><p>DGIA — Développement Global & Intelligence Appliquée — conçoit un environnement numérique accessible aux entrepreneurs et professionnels.</p><Link href="/login?mode=signup" className="button button-gold">Démarrer gratuitement <ArrowRight size={18}/></Link></div><div className="why-list"><div><ShieldCheck size={24}/><div><strong>Un espace personnel sécurisé</strong><p>Vos projets et demandes restent liés à votre compte.</p></div></div><div><Sparkles size={24}/><div><strong>Des outils qui évoluent</strong><p>Une première version pratique, avec de nouvelles fonctionnalités à venir.</p></div></div><div><Globe2 size={24}/><div><strong>Un service accessible en ligne</strong><p>Depuis votre ordinateur ou votre téléphone.</p></div></div></div></div></section>
-    <section className="section pricing-section" id="tarifs"><div className="section-heading centered"><div className="eyebrow dark">DES FORMULES POUR ÉVOLUER</div><h2>Commencez gratuitement.<br/><em>Grandissez à votre rythme.</em></h2><p>Les formules payantes seront proposées lors d’une prochaine étape.</p></div><div className="pricing-grid">
-      {[
-        {name:'Gratuit',price:'0 FCFA',desc:'Pour découvrir les fonctionnalités de la plateforme.',items:['Accès aux 3 modules','Quota de test par module','Espace personnel sécurisé'],ready:true},
-        {name:'Premium',price:'Bientôt',desc:'Pour aller plus loin dans votre productivité.',items:['Quotas plus élevés','Fonctionnalités avancées','Outils professionnels'],ready:false},
-        {name:'Professionnel',price:'Bientôt',desc:'Pour les entreprises et besoins spécialisés.',items:['Prestations adaptées','Gestion professionnelle','Licences et options'],ready:false}
-      ].map(p=><article className={'price-card'+(p.ready?' featured':'')} key={p.name}><span className="price-tier">{p.ready?'DISPONIBLE':'PROCHAINEMENT'}</span><h3>{p.name}</h3><strong>{p.price}</strong><p>{p.desc}</p><div className="price-features">{p.items.map(x=><div key={x}><Check size={18}/>{x}</div>)}</div>{p.ready?<Link href="/login?mode=signup" className="button button-gold button-wide">Créer mon compte <ArrowRight size={18}/></Link>:<span className="button button-muted button-wide">À venir</span>}</article>)}
+    <section className="section pricing-section" id="tarifs"><div className="section-heading centered"><div className="eyebrow dark">DES FORMULES POUR ÉVOLUER</div><h2>Commencez gratuitement.<br/><em>Grandissez à votre rythme.</em></h2><p>Tarifs de lancement validés. Premium et Professionnel sont en préparation : aucun paiement n’est encore activé.</p></div><div className="pricing-grid">
+      {catalog.map(p=><article className={'price-card'+(p.available?' featured':'')} key={p.code}>
+        <span className="price-tier">{p.available?'DISPONIBLE':'TARIF VALIDÉ · PROCHAINEMENT'}</span>
+        <h3>{p.label}</h3><strong>{p.priceLabel}</strong><p>{p.description}</p>
+        <div className="price-features"><div><Check size={18}/>{p.quotaLabel}</div>{p.benefits.map(x=><div key={x}><Check size={18}/>{x}</div>)}</div>
+        {p.available?<Link href="/login?mode=signup" className="button button-gold button-wide">Créer mon compte <ArrowRight size={18}/></Link>:<span className="button button-muted button-wide">Souscription bientôt disponible</span>}
+      </article>)}
     </div></section>
     <footer className="site-footer"><div><Link href="/" className="brand"><span className="brand-mark">D✦</span><span className="brand-word"><strong>DGIA <em>TECH</em></strong><small>SAAS PLATFORM</small></span></Link><p>Développement Global & Intelligence Appliquée</p></div><span>© {new Date().getFullYear()} DGIA TECH SAAS. Tous droits réservés.</span></footer>
   </main>
