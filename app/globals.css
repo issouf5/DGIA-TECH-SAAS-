@@ -23,3 +23,31 @@
   .side-nav.is-open{display:grid;position:absolute;z-index:53;top:calc(100% + 6px);left:12px;right:12px;gap:5px;padding:12px;border:1px solid #ffffff30;border-radius:14px;background:#112746;box-shadow:0 18px 35px #0005;max-height:70vh;overflow-y:auto}
   .side-nav a{width:100%;padding:13px 14px;background:transparent;font-size:14px}
 }
+
+
+/* V1.1 : gestion des enregistrements */
+.record-entry{min-width:0;padding:18px 0;border-top:1px solid var(--border)}
+.record-entry:first-of-type{border-top:0}
+.record-entry-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.record-entry-header strong{font-size:14px;line-height:1.5;overflow-wrap:anywhere}
+.record-entry-meta{margin:5px 0 10px;color:#8b98aa;font-size:11px}
+.record-entry-body-preview{color:var(--muted);font-size:12px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 14px}
+.record-entry-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.record-action{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;border:1px solid #dce4ee;border-radius:8px;background:#f7f9fc;color:#304663;padding:8px 11px;font-size:12px;font-weight:700}
+.record-action:hover:not(:disabled){background:#eaf0f8}
+.record-action:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.record-action-danger{color:#a63737;background:#fff7f7;border-color:#f0d9d9}
+.record-action-danger:hover:not(:disabled){background:#ffecec}
+.record-action-primary{color:#182c49;background:#f4dfab;border-color:#e7c574}
+.record-action-primary:hover:not(:disabled){background:#e9cd87}
+.record-entry-detail{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f7fb;border:1px solid #e1e8f1;border-radius:10px;padding:15px;margin-top:14px;font-size:13px;line-height:1.75;color:#30415c}
+.record-edit-form{display:grid;gap:15px;margin-top:16px;padding:17px;border-radius:10px;background:#f7f9fc}
+.record-edit-form label{display:grid;gap:8px;font-size:12px;font-weight:700;color:#30415c}
+.record-edit-form input,.record-edit-form textarea{display:block;width:100%;border:1px solid #dbe2ec;border-radius:9px;padding:12px;color:#17273f;background:white;resize:vertical;font-size:13px;font-weight:400}
+.record-edit-form input:focus,.record-edit-form textarea:focus{outline:2px solid #d6b15a;outline-offset:1px}
+@media(max-width:700px){
+  .sidebar .brand{padding:0;max-width:calc(100% - 105px)}
+  .record-entry-actions{gap:7px}
+  .record-action{min-height:40px}
+  .record-entry-header{flex-wrap:wrap}
+}
