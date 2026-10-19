@@ -1,0 +1,26 @@
+name: Vérification de la V1
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Installer les dépendances
+        run: npm install --no-audit --no-fund
+      - name: Vérifier TypeScript
+        run: npm run lint:types
+      - name: Compiler Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://gizctccrujkocvrnkful.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_U50zW1ll6KdRFsNvMmdIxA_aWsZn2UN
