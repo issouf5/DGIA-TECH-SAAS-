@@ -76,7 +76,24 @@ export async function POST(request: Request) {
       signal: AbortSignal.timeout(20000),
       cache: 'no-store'
     })
-    if (!response.ok) throw new Error('SERVICE_ERROR')
+    if (!response.ok) {
+      // Ne jamais exposer le message brut du fournisseur (il peut contenir des détails sensibles).
+      let code = ''
+      try {
+        const problem = await response.json() as { error?: { code?: unknown } }
+        if (typeof problem.error?.code === 'string') code = problem.error.code
+      } catch {
+        // Une réponse non JSON doit rester une erreur générique.
+      }
+      const category = code === 'insufficient_quota' ? 'insufficient_quota' : 'other'
+      console.error('DGIA AI: fournisseur', { status: response.status, category })
+      if (response.status === 401) throw new Error('OPENAI_AUTH')
+      if (response.status === 403) throw new Error('OPENAI_ACCESS')
+      if (response.status === 429 && category === 'insufficient_quota') throw new Error('OPENAI_BILLING')
+      if (response.status === 429) throw new Error('OPENAI_RATE_LIMIT')
+      if (response.status === 400 || response.status === 404) throw new Error('OPENAI_REQUEST')
+      throw new Error('OPENAI_UNAVAILABLE')
+    }
     const payload = await response.json() as Output
     const text = (payload.output_text || payload.output?.flatMap(item => item.content || [])
       .filter(item => item.type === 'output_text').map(item => item.text || '').join('\n') || '').trim().slice(0, 8000)
@@ -84,9 +101,23 @@ export async function POST(request: Request) {
     const saved = await finalize(true, text, payload.usage)
     return NextResponse.json({ text, warning: saved ? null : 'Enregistrement non confirmé.' },
       { headers: { 'Cache-Control': 'no-store' } })
-  } catch {
+  } catch (caught) {
+    const reason = caught instanceof Error ? caught.message : ''
+    const messages: Record<string, string> = {
+      OPENAI_AUTH: 'Clé API OpenAI refusée. Vérifiez OPENAI_API_KEY dans Vercel.',
+      OPENAI_ACCESS: 'Le projet OpenAI n’a pas accès au modèle demandé. Vérifiez les autorisations du projet.',
+      OPENAI_BILLING: 'Crédits API OpenAI insuffisants ou budget atteint. Vérifiez Billing et Usage sur OpenAI Platform.',
+      OPENAI_RATE_LIMIT: 'Limite de requêtes OpenAI atteinte. Réessayez plus tard.',
+      OPENAI_REQUEST: 'La requête a été refusée par OpenAI. Le modèle ou ses paramètres doivent être vérifiés.',
+      OPENAI_UNAVAILABLE: 'Le service OpenAI est momentanément indisponible.',
+      EMPTY_OUTPUT: 'OpenAI n’a retourné aucun texte. Réessayez avec une demande plus précise.'
+    }
+    const explanation = messages[reason] || (reason === 'TimeoutError'
+      ? 'Le fournisseur IA a dépassé le délai autorisé.'
+      : 'Impossible de joindre le service IA pour le moment.')
     const refunded = await finalize(false, null)
-    return respond(refunded ? 'Service indisponible. Votre quota a été rétabli.' :
-      'Service indisponible. Vérifiez votre quota avant de réessayer.', 502)
+    return respond(explanation + (refunded
+      ? ' Votre quota DGIA a été rétabli.'
+      : ' Vérifiez votre quota DGIA avant de réessayer.'), 502)
   }
 }
