@@ -1,3 +1,4 @@
+import './wifi-wizard.css'
 import { Network, Router, Wifi, MonitorCog, ClipboardList } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getQuota, type Limit, type Quota } from '@/lib/data'
@@ -19,6 +20,6 @@ export default async function ITPage() {
       <GuidedItDiagnosis quotaAvailable={quota.used < quota.limit}/>
       <div className="workspace-card"><div className="workspace-card-heading"><div><h2>Nouvelle demande d’assistance</h2><p>Le traitement par DGIA sera activé prochainement.</p></div><ClipboardList size={21}/></div><ItForm disabled={quota.used>=quota.limit}/></div>
       <div className="workspace-card"><h2>Historique des demandes ({requests?.length??0})</h2><p className="field-note">Les demandes en attente peuvent être modifiées ou supprimées.</p><RecordManager kind="it" records={(requests??[]).map(r=>({id:r.id,title:r.title,body:r.details,createdAt:r.created_at,status:r.status}))}/></div>
-    </div><aside className="workspace-side"><QuotaBar {...quota}/><div className="tips-card"><h3>Domaines d’intervention</h3><div><Wifi size={18}/> Wi-Fi et connectivité</div><div><Router size={18}/> Réseaux et MikroTik</div><div><MonitorCog size={18}/> Assistance informatique</div><p>Le diagnostic guidé propose des conseils prédéfinis, sans analyse en temps réel de votre matériel.</p></div></aside></div>
+    </div><aside className="workspace-side"><QuotaBar {...quota}/><div className="tips-card"><h3>Domaines d’intervention</h3><div><Wifi size={18}/> Wi-Fi et connectivité</div><div><Router size={18}/> Réseaux et MikroTik</div><div><MonitorCog size={18}/> Assistance informatique</div><p>L’assistant Wi-Fi pose plusieurs questions et propose une orientation fondée sur vos réponses, sans analyse réelle du matériel.</p></div></aside></div>
   </>
 }

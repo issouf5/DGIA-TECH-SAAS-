@@ -73,3 +73,18 @@ un nom de réseau qui disparaît et une connexion instable. Il ne génère pas
 de rapport ambigu avant la clarification. Les rapports précisent aussi la
 première vérification selon le nombre d'appareils touchés. Tout reste local
 au navigateur, sans API payante ni accès au matériel.
+
+
+## V1.7 — diagnostic Wi-Fi interactif fondé sur des sources techniques
+
+Dans DGIA IT Solutions, la catégorie Wi-Fi propose maintenant un questionnaire
+progressif : type de problème, nombre d'appareils, perte Wi-Fi ou Internet,
+visibilité du nom du réseau, distance du routeur et précisions facultatives.
+Les questions inutiles sont ignorées selon les réponses. Le rapport fournit
+une hypothèse non confirmée et un plan de vérification ciblé, avec des liens
+vers les guides officiels Microsoft sur le dépannage et la couverture Wi-Fi.
+
+Le calcul s'effectue dans le navigateur, sans mesure réseau ni API payante.
+Copier reste gratuit et illimité. Enregistrer une demande utilise le quota IT
+habituel. Les autres catégories (ordinateur, imprimante, MikroTik) conservent
+le diagnostic guidé existant. Aucun changement de schéma Supabase.

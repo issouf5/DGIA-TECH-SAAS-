@@ -1,0 +1,19 @@
+.wifi-wizard{margin:8px 0 18px;padding:20px;border:1px solid #dce4ed;border-radius:14px;background:#f8fafc}
+.wifi-wizard-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.wifi-wizard-top strong{font-size:16px;color:#102745}
+.wifi-step{font-size:12px;font-weight:700;color:#607089;margin:0 0 9px}
+.wifi-progress{height:7px;background:#dce4ed;border-radius:999px;overflow:hidden;margin-bottom:22px}
+.wifi-progress span{display:block;height:100%;background:#b99346;transition:width .2s}
+.wifi-wizard h3{font-size:17px;margin:0 0 16px;color:#102745}
+.wifi-options{display:grid;gap:10px}
+.wifi-option{display:flex;align-items:center;gap:11px;padding:13px 14px;border:1px solid #dce4ed;border-radius:11px;background:white;color:#24364e;font-size:14px;cursor:pointer;line-height:1.45}
+.wifi-option.selected{border-color:#b99346;background:#fffaed}
+.wifi-option input{accent-color:#b99346;flex:none;width:17px;height:17px}
+.wifi-wizard textarea{display:block;width:100%;border:1px solid #dce4ed;border-radius:11px;padding:13px;background:white;color:#20364f;font-size:14px;resize:vertical}
+.wifi-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:20px 0 10px}
+.wifi-actions button{min-height:43px}
+.wifi-complete{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;background:#f0faf4;border:1px solid #cdebd8;padding:15px;border-radius:11px;color:#276341}
+.wifi-complete p{flex:1;min-width:190px;margin:0;font-size:13px}
+.wifi-references{display:grid;gap:8px;margin-top:18px;font-size:12px}
+.wifi-references a{color:#285c94;text-decoration:underline;overflow-wrap:anywhere}
+@media(max-width:620px){.wifi-wizard{padding:14px}.wifi-actions{flex-direction:column-reverse}.wifi-actions button{width:100%;justify-content:center}.wifi-wizard-top .record-action{min-height:38px}}

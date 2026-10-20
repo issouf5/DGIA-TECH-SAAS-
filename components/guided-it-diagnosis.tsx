@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { ClipboardCheck, Copy, Save, ShieldCheck, Wrench } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { friendlyError } from '@/lib/data'
+import { WifiDiagnosticWizard } from '@/components/wifi-diagnostic-wizard'
 
 type Category = 'wifi' | 'computer' | 'printer' | 'mikrotik'
 type Scope = 'one' | 'several' | 'unknown'
@@ -232,7 +233,7 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
     <div className="workspace-card-heading">
       <div>
         <h2>Diagnostic informatique guidé</h2>
-        <p>Obtenez des premières vérifications adaptées à votre problème, sans API payante.</p>
+        <p>Répondez à quelques questions pour recevoir des vérifications adaptées, sans API payante.</p>
       </div>
       <Wrench size={23}/>
     </div>
@@ -240,7 +241,7 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
       <ShieldCheck size={17}/>
       Cet outil utilise des règles prédéfinies. Il ne se connecte pas à vos appareils et ne modifie aucun réseau.
     </div>
-    <form className="workspace-form" onSubmit={diagnose}>
+    <div className="workspace-form">
       <label>Quel équipement est concerné ?
         <select value={category} onChange={event => {
           const next = event.target.value as Category
@@ -253,6 +254,12 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
             <option key={key} value={key}>{value.label}</option>)}
         </select>
       </label>
+    </div>
+    {category === 'wifi' ? <WifiDiagnosticWizard onReport={next => {
+      setReport(next)
+      setSaved(false)
+      setNotice(next ? { message: 'Rapport Wi-Fi préparé gratuitement, sans API externe.', error: false } : null)
+    }}/> : <form className="workspace-form" onSubmit={diagnose}>
       <label>Quel problème rencontrez-vous ?
         <select value={symptomId} onChange={event => { setSymptomId(event.target.value); setClarification('none'); resetResult() }}>
           {guides[category].symptoms.map(item =>
@@ -290,7 +297,7 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
       <button type="submit" className="button button-gold">
         <ClipboardCheck size={17}/> Obtenir mes conseils gratuitement
       </button>
-    </form>
+    </form>}
     {report && <div className="diagnosis-result">
       <h3>Votre orientation technique</h3>
       <div className="diagnosis-report" aria-label="Rapport de diagnostic indicatif">{report.body}</div>
@@ -305,6 +312,11 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
       </div>
       <p className="field-note">Les conseils et la copie sont gratuits et illimités. Seul l’enregistrement d’une demande consomme une opération du quota IT Solutions.</p>
       {!quotaAvailable && <p className="field-note">Quota atteint : vous pouvez toujours consulter et copier les conseils.</p>}
+      {category === 'wifi' && <div className="wifi-references">
+        <strong>Sources techniques officielles :</strong>
+        <a href="https://support.microsoft.com/fr-fr/windows/experience/connectivity-networking/fix-wi-fi-connection-issues-in-windows" target="_blank" rel="noopener noreferrer">Microsoft — Dépannage Wi-Fi ↗</a>
+        <a href="https://support.microsoft.com/fr-fr/windows/experience/connectivity-networking/wi-fi-and-your-home-layout" target="_blank" rel="noopener noreferrer">Microsoft — Couverture Wi-Fi ↗</a>
+      </div>}
     </div>}
     {notice && <p role="status" className={'form-message ' + (notice.error ? 'error' : 'success')}>{notice.message}</p>}
   </section>
