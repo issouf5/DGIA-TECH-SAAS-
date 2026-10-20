@@ -46,3 +46,20 @@ et du moyen de paiement. Tant que cette variable est absente ou différente
 de `true`, aucune génération facturable n'est lancée.
 
 La clé API ne doit jamais être transmise au navigateur ni publiée dans GitHub.
+
+
+## V1.5 — Améliorations après test mobile (20/10/2026)
+
+- Studio de rédaction : phrases plus naturelles, traitement des appels à l'action courts
+  comme « Devis », et correction simple de « Petit entreprise » en « les petites entreprises ».
+  La sortie reste un **modèle déterministe** modifiable, sans IA générative.
+- Liste des textes : lorsqu'on ouvre un élément avec « Voir », le texte complet
+  remplace l'aperçu au lieu de l'afficher deux fois.
+- **DGIA IT Solutions : diagnostic guidé** (Wi-Fi, ordinateur, imprimante,
+  réseau MikroTik). Les conseils sont déterministes et calculés dans le navigateur ;
+  aucun scan, accès aux appareils, modification réseau ou appel API.
+  L'utilisateur peut copier gratuitement un rapport, ou l'enregistrer
+  comme demande d'assistance dans `service_requests` avec le quota IT habituel.
+  Le diagnostic est indicatif, et le traitement humain des demandes n'est pas encore actif.
+
+Aucune nouvelle table ou clé API n'est nécessaire pour cette version.

@@ -83,3 +83,12 @@
 .free-studio-result .field-note{margin:14px 0 0}
 .ai-provider-paused{border-style:dashed;background:#fdfefe}
 @media(max-width:620px){.free-studio-result{padding:15px}.free-studio-actions{flex-direction:column}.free-studio-actions .record-action{justify-content:center;width:100%}}
+
+
+/* V1.5 — diagnostic informatique guidé sans appel externe */
+.guided-diagnosis .workspace-card-heading svg{color:#b68b37}
+.diagnosis-result{margin-top:26px;padding:22px;border:1px solid #e3e9f1;background:#f8fafc;border-radius:14px}
+.diagnosis-result h3{font-size:18px;margin:0 0 14px;color:#152743}
+.diagnosis-report{white-space:pre-wrap;overflow-wrap:anywhere;background:white;border:1px solid #dce4ed;border-radius:12px;padding:19px;color:#25364e;line-height:1.75;font-size:14px}
+.diagnosis-result .field-note{margin:14px 0 0}
+@media(max-width:620px){.diagnosis-result{padding:14px}.diagnosis-report{padding:14px;font-size:13px}}

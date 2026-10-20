@@ -110,7 +110,7 @@ export function RecordManager({ kind, records }: { kind: Kind; records: ManagedR
           {kind === 'it' && <span className="record-status">{statusLabels[record.status || ''] || 'À suivre'}</span>}
         </div>
         <div className="record-entry-meta">{dateText && <small>Créé le {dateText}</small>}</div>
-        {!isEditing && <p className="record-entry-body-preview">{record.body.length > 150 ? record.body.slice(0, 150) + '…' : (record.body || 'Aucune description')}</p>}
+        {!isEditing && !isExpanded && <p className="record-entry-body-preview">{record.body.length > 150 ? record.body.slice(0, 150) + '…' : (record.body || 'Aucune description')}</p>}
         {!isEditing && <div className="record-entry-actions">
           <button type="button" className="record-action" aria-expanded={isExpanded} onClick={() => setExpandedId(isExpanded ? null : record.id)}>
             <Eye size={15}/> {isExpanded ? 'Réduire' : 'Voir'}

@@ -24,62 +24,85 @@ const tones: { value: Tone; label: string }[] = [
   { value: 'concis', label: 'Concis' }
 ]
 
+function tidy(value: string) {
+  return value.trim().replace(/\s+/g, ' ')
+}
+
+function punctuate(value: string) {
+  const text = tidy(value)
+  return /[.!?…]$/.test(text) ? text : text + '.'
+}
+
+function readableAudience(value: string) {
+  const text = tidy(value)
+  if (/^petit(?:e|s|es)? entreprise(?:s)?$/i.test(text)) return 'les petites entreprises'
+  return text
+}
+
+function callToAction(value: string) {
+  const text = tidy(value)
+  if (!text) return 'Contactez-nous pour en savoir plus.'
+  if (/^(un )?devis[.!?]?$/i.test(text)) return 'Demandez un devis pour connaître les modalités de cette offre.'
+  if (/^(contact|contactez-nous)[.!?]?$/i.test(text)) return 'Contactez-nous pour obtenir plus de renseignements.'
+  if (/^(infos?|informations?|renseignements?)[.!?]?$/i.test(text)) return 'Contactez-nous pour recevoir plus d’informations.'
+  return punctuate(text)
+}
+
 function prepareText(data: {
   format: Format; tone: Tone; brand: string; offer: string;
   audience: string; benefit: string; action: string; contact: string
 }): Draft {
-  const brand = data.brand.trim()
-  const offer = data.offer.trim()
-  const audience = data.audience.trim()
-  const benefit = data.benefit.trim()
-  const action = data.action.trim() || 'Contactez-nous pour en savoir plus.'
-  const contact = data.contact.trim()
+  const brand = tidy(data.brand)
+  const offer = tidy(data.offer)
+  const audience = readableAudience(data.audience)
+  const benefit = punctuate(data.benefit)
+  const action = callToAction(data.action)
+  const contact = tidy(data.contact)
   const contactLine = contact ? '\nContact : ' + contact : ''
   const title = (formats.find(item => item.value === data.format)?.label || 'Texte') +
     ' — ' + offer.slice(0, 65)
-  const introduction = data.tone === 'dynamique'
-    ? '✨ Une nouvelle occasion à découvrir !'
-    : data.tone === 'chaleureux'
-      ? 'Bonjour et bienvenue !'
-      : data.tone === 'concis'
-        ? 'À découvrir :'
-        : 'Découvrez notre proposition :'
-
+  const openings: Record<Tone, string> = {
+    professionnel: 'Découvrez notre offre « ' + offer + ' ».',
+    chaleureux: 'Bonjour ! Nous sommes heureux de vous présenter « ' + offer + ' ».',
+    dynamique: '✨ Une offre à découvrir : « ' + offer + ' » !',
+    concis: 'Offre : « ' + offer + ' ».'
+  }
+  const intro = openings[data.tone]
+  const benefitLine = 'Point fort : ' + benefit
   let body = ''
   switch (data.format) {
     case 'social':
-      body = introduction + '\n\n' + brand + ' vous présente : ' + offer +
-        '\n\nPour : ' + audience + '\nNotre atout : ' + benefit +
+      body = intro + '\n\n' + brand + ' vous présente cette proposition.' +
+        '\nPublic concerné : ' + audience + '.\n' + benefitLine +
         '\n\n' + action + contactLine
       break
     case 'product':
-      body = offer + '\n\n' + brand + ' propose cette offre à : ' + audience +
-        '\n\nCe qui la distingue : ' + benefit +
+      body = intro + '\n\nCette proposition est portée par ' + brand + '.' +
+        '\nPublic concerné : ' + audience + '.\n' + benefitLine +
         '\n\n' + action + contactLine
       break
     case 'prospection':
-      body = 'Bonjour,\n\nJe vous écris au nom de ' + brand +
-        ' pour vous présenter notre offre : ' + offer +
-        '.\n\nElle s’adresse à ' + audience +
-        '. Son principal avantage : ' + benefit +
-        '.\n\n' + action + contactLine +
+      body = (data.tone === 'chaleureux' ? 'Bonjour et bienvenue,' : 'Bonjour,') +
+        '\n\nJe vous contacte au nom de ' + brand +
+        ' pour vous présenter notre offre « ' + offer + ' ».' +
+        '\n\nElle s’adresse au public suivant : ' + audience + '.' +
+        '\n' + benefitLine + '\n\n' + action + contactLine +
         '\n\nCordialement,\n' + brand
       break
     case 'whatsapp':
-      body = 'Bonjour 👋\n\n' + brand + ' vous propose : ' + offer +
-        '\n\n👥 Public : ' + audience +
-        '\n⭐ Avantage : ' + benefit +
+      body = '📣 ' + brand + '\n\n' + intro +
+        '\n\nPour : ' + audience + '\n⭐ ' + benefitLine +
         '\n\n' + action + contactLine
       break
     case 'plan':
       body = 'PLAN D’ACTION — ' + offer + '\n\nOrganisation : ' + brand +
         '\nPublic cible : ' + audience +
         '\nObjectif : ' + benefit +
-        '\n\n1. Identifier les besoins précis du public cible.' +
+        '\n\n1. Recueillir les besoins du public cible.' +
         '\n2. Préparer les ressources et les informations nécessaires.' +
         '\n3. Présenter l’offre et recueillir les premiers retours.' +
-        '\n4. Ajuster la démarche selon les retours reçus.' +
-        '\n5. Faire un bilan et définir les prochaines actions.' +
+        '\n4. Adapter la démarche selon les retours reçus.' +
+        '\n5. Faire le bilan et définir les prochaines actions.' +
         '\n\nProchaine étape : ' + action + contactLine
       break
   }
@@ -184,7 +207,7 @@ export function FreeContentStudio({ quotaAvailable }: { quotaAvailable: boolean 
           <input required minLength={3} maxLength={140} value={audience} onChange={event => setAudience(event.target.value)}
             placeholder="Ex. : Petites entreprises"/>
         </label>
-        <label>Principal avantage
+        <label>Principal avantage (soyez précis)
           <input required minLength={5} maxLength={240} value={benefit} onChange={event => setBenefit(event.target.value)}
             placeholder="Ex. : Un accompagnement adapté à vos besoins"/>
         </label>
