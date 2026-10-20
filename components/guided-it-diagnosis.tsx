@@ -10,6 +10,15 @@ type Category = 'wifi' | 'computer' | 'printer' | 'mikrotik'
 type Scope = 'one' | 'several' | 'unknown'
 type Symptom = { id: string; label: string; steps: string[] }
 type Report = { title: string; body: string }
+type Clarification = 'none' | 'disappears'
+
+// Une incohérence probable doit être clarifiée, pas interprétée comme un diagnostic.
+function mentionsInterruptions(text: string) {
+  return /coupur|d[eé]connex|instab|intermittent|perte[s]? de connexion/i.test(text)
+}
+function mentionsMissingNetwork(text: string) {
+  return /dispar|n['’]appar|invisible|introuvable|absent/i.test(text)
+}
 
 const guides: Record<Category, { label: string; symptoms: Symptom[] }> = {
   wifi: {
@@ -124,6 +133,9 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
   const [symptomId, setSymptomId] = useState(guides.wifi.symptoms[0].id)
   const [scope, setScope] = useState<Scope>('unknown')
   const [notes, setNotes] = useState('')
+  const [clarification, setClarification] = useState<Clarification>('none')
+  const needsClarification = category === 'wifi' && symptomId === 'invisible' &&
+    mentionsInterruptions(notes) && !mentionsMissingNetwork(notes) && clarification === 'none'
   const [report, setReport] = useState<Report | null>(null)
   const [busy, setBusy] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -140,18 +152,42 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
     const guide = guides[category]
     const symptom = guide.symptoms.find(item => item.id === symptomId)
     if (!symptom) return
+    if (needsClarification) {
+      setReport(null)
+      setNotice({
+        message: 'Précisez si le nom du Wi-Fi disparaît ou si la connexion se coupe alors que le réseau reste visible.',
+        error: true
+      })
+      return
+    }
     const title = ('Diagnostic guidé — ' + guide.label + ' : ' + symptom.label).slice(0, 160)
+    const firstCheck: Record<Scope, string> = {
+      one: 'Vérifiez d’abord si un deuxième appareil peut utiliser le même équipement ou réseau.',
+      several: 'Puisque plusieurs appareils sont touchés, vérifiez en priorité le routeur, le point d’accès ou la liaison commune.',
+      unknown: 'Commencez par tester un autre appareil pour déterminer si le problème est isolé ou général.'
+    }
+    const interpretation = category === 'wifi' && symptomId === 'invisible' && clarification === 'disappears'
+      ? 'Vous avez confirmé que le nom du réseau disparaît de la liste. Vérifiez sa visibilité et l’état du point d’accès.'
+      : category === 'wifi' && symptomId === 'unstable'
+        ? 'Le réseau semble accessible, mais la connexion est instable. Il faut distinguer une coupure Wi-Fi d’une panne Internet.'
+        : 'Ces conseils correspondent au symptôme choisi. Ils ne permettent pas encore de confirmer la cause.'
     const body = [
       'ORIENTATION TECHNIQUE — DGIA IT SOLUTIONS',
       'Catégorie : ' + guide.label,
       'Problème déclaré : ' + symptom.label,
       'Étendue : ' + scopeLabels[scope],
       notes.trim() ? 'Précisions : ' + notes.trim() : '',
+      clarification === 'disappears' ? 'Clarification : le nom du Wi-Fi disparaît de la liste.' : '',
       '',
-      'Première orientation : ' + scopeGuidance[scope],
+      'Interprétation indicative : ' + interpretation,
+      'Étendue du problème : ' + scopeGuidance[scope],
       '',
-      'Vérifications conseillées :',
+      'Première vérification prioritaire : ' + firstCheck[scope],
+      '',
+      'Autres vérifications conseillées :',
       ...symptom.steps.map((step, index) => (index + 1) + '. ' + step),
+      '',
+      'Si le problème persiste après ces vérifications, transmettez ce rapport à un technicien.',
       '',
       'Ce rapport repose sur vos réponses. Il ne remplace pas un diagnostic technique réel.',
       'Ne transmettez jamais vos mots de passe ou codes d’accès.'
@@ -210,6 +246,7 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
           const next = event.target.value as Category
           setCategory(next)
           setSymptomId(guides[next].symptoms[0].id)
+          setClarification('none')
           resetResult()
         }}>
           {Object.entries(guides).map(([key, value]) =>
@@ -217,7 +254,7 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
         </select>
       </label>
       <label>Quel problème rencontrez-vous ?
-        <select value={symptomId} onChange={event => { setSymptomId(event.target.value); resetResult() }}>
+        <select value={symptomId} onChange={event => { setSymptomId(event.target.value); setClarification('none'); resetResult() }}>
           {guides[category].symptoms.map(item =>
             <option key={item.id} value={item.id}>{item.label}</option>)}
         </select>
@@ -230,9 +267,25 @@ export function GuidedItDiagnosis({ quotaAvailable }: { quotaAvailable: boolean 
       </label>
       <label>Précisions utiles (facultatif)
         <textarea rows={3} maxLength={350} value={notes}
-          onChange={event => { setNotes(event.target.value); resetResult() }}
+          onChange={event => { setNotes(event.target.value); setClarification('none'); resetResult() }}
           placeholder="Ex. : Les coupures se produisent depuis ce matin, sur deux ordinateurs."/>
       </label>
+      {needsClarification && <div className="diagnosis-clarification" role="group" aria-label="Clarification du problème Wi-Fi">
+        <strong>Précisons le problème avant de continuer</strong>
+        <p>Vous avez indiqué « Le réseau Wi-Fi ne s’affiche pas », mais vos précisions parlent de coupures. Que se passe-t-il exactement ?</p>
+        <div className="diagnosis-clarification-actions">
+          <button type="button" className="record-action" onClick={() => {
+            setClarification('disappears')
+            resetResult()
+          }}>Le nom du Wi-Fi disparaît de la liste</button>
+          <button type="button" className="record-action" onClick={() => {
+            setSymptomId('unstable')
+            setClarification('none')
+            resetResult()
+          }}>Le Wi-Fi reste visible, mais la connexion coupe</button>
+        </div>
+      </div>}
+      {clarification === 'disappears' && <p className="field-note" role="status">Précision prise en compte : le nom du réseau disparaît. Vous pouvez préparer le rapport.</p>}
       <p className="field-note">Ne saisissez aucun mot de passe, code Wi-Fi ou autre information secrète.</p>
       <button type="submit" className="button button-gold">
         <ClipboardCheck size={17}/> Obtenir mes conseils gratuitement

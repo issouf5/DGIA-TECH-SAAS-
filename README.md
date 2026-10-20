@@ -63,3 +63,13 @@ La clé API ne doit jamais être transmise au navigateur ni publiée dans GitHub
   Le diagnostic est indicatif, et le traitement humain des demandes n'est pas encore actif.
 
 Aucune nouvelle table ou clé API n'est nécessaire pour cette version.
+
+
+## V1.6 — clarification des symptômes Wi-Fi
+
+Si le symptôme choisi est « réseau Wi-Fi invisible » mais que les précisions
+mentionnent seulement des coupures, le diagnostic demande de choisir entre
+un nom de réseau qui disparaît et une connexion instable. Il ne génère pas
+de rapport ambigu avant la clarification. Les rapports précisent aussi la
+première vérification selon le nombre d'appareils touchés. Tout reste local
+au navigateur, sans API payante ni accès au matériel.

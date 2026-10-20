@@ -92,3 +92,12 @@
 .diagnosis-report{white-space:pre-wrap;overflow-wrap:anywhere;background:white;border:1px solid #dce4ed;border-radius:12px;padding:19px;color:#25364e;line-height:1.75;font-size:14px}
 .diagnosis-result .field-note{margin:14px 0 0}
 @media(max-width:620px){.diagnosis-result{padding:14px}.diagnosis-report{padding:14px;font-size:13px}}
+
+
+/* V1.6 — clarification des symptômes contradictoires */
+.diagnosis-clarification{margin:4px 0 18px;padding:18px;background:#fff9e8;border:1px solid #e7c777;border-radius:13px;color:#543d11}
+.diagnosis-clarification strong{display:block;margin-bottom:8px;font-size:15px}
+.diagnosis-clarification p{margin:0 0 14px;font-size:14px;line-height:1.6}
+.diagnosis-clarification-actions{display:flex;flex-wrap:wrap;gap:10px}
+.diagnosis-clarification-actions .record-action{white-space:normal;text-align:left;line-height:1.4;min-height:44px}
+@media(max-width:620px){.diagnosis-clarification{padding:14px}.diagnosis-clarification-actions{flex-direction:column}.diagnosis-clarification-actions .record-action{width:100%;justify-content:flex-start}}
