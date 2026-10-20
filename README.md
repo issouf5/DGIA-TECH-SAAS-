@@ -97,3 +97,14 @@ sur un seul appareil) plutôt qu’une panne du point d’accès. Les étapes
 proposent un test de proximité, un second appareil, une inspection des
 obstacles et une escalade si le réseau disparaît aussi près du routeur.
 Cette orientation reste indicative et gratuite.
+
+
+## V1.7.2 — accès Internet sur un seul appareil
+
+Le diagnostic « Wi-Fi connecté, mais sans Internet » distingue désormais
+un appareil isolé, plusieurs appareils touchés et une étendue inconnue.
+Pour un appareil isolé, les vérifications portent sur un deuxième appareil,
+la reconnexion Wi-Fi et les éventuels paramètres VPN ou proxy, avant toute
+escalade vers un technicien. La recommandation de contacter le fournisseur
+est réservée aux pannes générales confirmées. Les étapes de comparaison
+ne sont plus répétées. Aucun appel API, changement Supabase ou coût ajouté.

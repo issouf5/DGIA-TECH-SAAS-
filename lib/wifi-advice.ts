@@ -27,14 +27,33 @@ export function wifiReport(a: WifiAnswers): WifiReport {
   let hypothesis = ''
   let explanation = ''
   let actions: string[] = []
-  if (offline) {
-    hypothesis = 'Interruption de l’accès Internet sans perte confirmée du Wi-Fi'
-    explanation = 'Le Wi-Fi peut fonctionner alors que la liaison Internet est interrompue.'
+  if (offline && a.scope === 'one') {
+    hypothesis = 'Accès Internet potentiellement perturbé sur un seul appareil'
+    explanation = 'Le Wi-Fi semble connecté, mais cet appareil n’accède pas à Internet. Si un autre appareil navigue normalement sur le même réseau, vérifiez en priorité les réglages de l’appareil concerné plutôt que le fournisseur d’accès.'
     actions = [
-      'Comparez la navigation Internet sur deux appareils.',
-      'Observez les voyants du modem ou du routeur pendant la coupure.',
-      'Essayez un autre site pour écarter une panne limitée à un service.',
-      'Si tous les appareils sont touchés, contactez le gestionnaire du réseau ou le fournisseur.'
+      'Vérifiez si un autre appareil accède normalement à Internet sur le même réseau Wi-Fi.',
+      'Sur l’appareil concerné, essayez plusieurs sites pour écarter une panne limitée à un service.',
+      'Désactivez puis réactivez le Wi-Fi sur cet appareil et reconnectez-vous au réseau habituel.',
+      'Si un VPN ou un proxy est configuré, demandez à son responsable de vérifier qu’il ne bloque pas la connexion.',
+      'Si les autres appareils fonctionnent mais que le problème persiste, faites contrôler les paramètres réseau de cet appareil.'
+    ]
+  } else if (offline && a.scope === 'several') {
+    hypothesis = 'Interruption possible de la liaison Internet ou du routeur'
+    explanation = 'Plusieurs appareils restent connectés au Wi-Fi sans accéder à Internet. La liaison commune, le modem ou le routeur sont à vérifier en priorité.'
+    actions = [
+      'Confirmez que plusieurs appareils connectés au même Wi-Fi ne peuvent ouvrir aucun site.',
+      'Observez les voyants Internet du modem ou du routeur pendant la panne.',
+      'Essayez plusieurs sites pour écarter un problème limité à un service.',
+      'Si la panne est générale et persiste, contactez le gestionnaire du réseau ou le fournisseur d’accès.'
+    ]
+  } else if (offline) {
+    hypothesis = 'Perte d’accès Internet dont l’étendue reste à déterminer'
+    explanation = 'Il faut d’abord savoir si un seul appareil est concerné ou si plusieurs appareils partagent la panne.'
+    actions = [
+      'Testez Internet sur un deuxième appareil connecté au même réseau Wi-Fi.',
+      'Si seul le premier appareil est concerné, vérifiez ses paramètres Wi-Fi et ses éventuels réglages VPN ou proxy.',
+      'Si plusieurs appareils sont concernés, observez les voyants Internet du modem ou du routeur.',
+      'Contactez le gestionnaire du réseau si une panne générale est confirmée et persiste.'
     ]
   } else if (invisible && far) {
     hypothesis = a.scope === 'one'
@@ -87,15 +106,15 @@ export function wifiReport(a: WifiAnswers): WifiReport {
       'Transmettez ces observations à un technicien si nécessaire.'
     ]
   }
-  if (a.scope === 'one') actions.unshift('Vérifiez d’abord un autre appareil au même endroit.')
-  if (a.scope === 'unknown') actions.unshift('Testez un autre appareil pour connaître l’étendue de la panne.')
+  if (a.scope === 'one' && !offline) actions.unshift('Vérifiez d’abord un autre appareil au même endroit.')
+  if (a.scope === 'unknown' && !offline) actions.unshift('Testez un autre appareil pour connaître l’étendue de la panne.')
   const issues: Record<string, string> = {
     drops: 'Déconnexions Wi-Fi', offline: 'Wi-Fi sans Internet',
     missing: 'Réseau invisible', slow: 'Connexion lente'
   }
   const body = [
     'ORIENTATION TECHNIQUE — DGIA IT SOLUTIONS',
-    'Diagnostic interactif V1.7.1',
+    'Diagnostic interactif V1.7.2',
     '',
     'Symptôme : ' + (issues[a.issue] || 'Non précisé'),
     'Appareils : ' + (a.scope === 'several' ? 'Plusieurs' : a.scope === 'one' ? 'Un seul' : 'Non déterminé'),
