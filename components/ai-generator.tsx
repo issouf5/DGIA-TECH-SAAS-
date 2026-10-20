@@ -59,6 +59,14 @@ export function AiGenerator({ configured, quotaAvailable, history }: {
     }
   }
 
+  if (!configured) return <div className="workspace-card ai-provider-paused">
+    <div className="workspace-card-heading"><div>
+      <h2>Générateur par IA externe — en pause</h2>
+      <p>La génération OpenAI est volontairement désactivée pour éviter toute dépense.</p>
+    </div><Bot size={22}/></div>
+    <p className="field-note">Utilisez le studio de rédaction gratuit ci-dessus. Votre clé API reste enregistrée de manière sécurisée ; aucun appel payant n’est envoyé.</p>
+  </div>
+
   return <>
     <div className="workspace-card">
       <div className="workspace-card-heading"><div><h2>Générateur de contenus IA</h2><p>Préparez des messages, publications et descriptions avec une IA.</p></div><WandSparkles size={22}/></div>

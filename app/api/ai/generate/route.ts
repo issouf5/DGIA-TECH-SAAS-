@@ -18,6 +18,8 @@ function respond(error: string, status: number) {
 }
 
 export async function POST(request: Request) {
+  // Désactivé par défaut : ne jamais lancer d'appel OpenAI facturable sans activation explicite.
+  if (process.env.DGIA_AI_API_ENABLED !== 'true') return respond('Génération IA externe suspendue. Utilisez le studio de rédaction gratuit.', 503)
   if (request.headers.get('origin') !== new URL(request.url).origin) return respond('Requête non autorisée.', 403)
   if (!request.headers.get('content-type')?.includes('application/json')) return respond('Format invalide.', 415)
   if (Number(request.headers.get('content-length') || 0) > 8000) return respond('Demande trop longue.', 413)

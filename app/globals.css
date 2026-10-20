@@ -68,3 +68,18 @@
 .ai-history-entry summary{cursor:pointer;color:#214e84;font-size:12px;font-weight:700}
 .ai-history-entry .record-entry-detail{margin-top:12px}
 .ai-history-entry details{max-width:100%}
+
+
+/* V1.4 — studio de rédaction gratuit, sans appel au fournisseur IA */
+.free-studio-notice{display:flex;align-items:flex-start;gap:10px;padding:13px 15px;margin:14px 0 22px;border:1px solid #cdebd8;border-radius:12px;background:#f0faf4;color:#286747;font-size:13px;line-height:1.6}
+.free-studio-notice svg{flex-shrink:0;margin-top:2px}
+.free-studio-result{margin-top:26px;padding:22px;border:1px solid #e3e9f1;background:#f8fafc;border-radius:14px}
+.free-studio-result h3{font-size:17px;margin:0 0 16px}
+.free-studio-result label{display:block;font-size:13px;font-weight:700;margin:0 0 15px;color:#27364c}
+.free-studio-result input,.free-studio-result textarea{display:block;width:100%;margin-top:9px;border:1px solid #d7dfe9;border-radius:11px;padding:12px 14px;background:white;color:#1a2b42;line-height:1.65;font-size:14px}
+.free-studio-result textarea{resize:vertical;min-height:190px}
+.free-studio-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:17px}
+.free-studio-actions .record-action{min-height:43px}
+.free-studio-result .field-note{margin:14px 0 0}
+.ai-provider-paused{border-style:dashed;background:#fdfefe}
+@media(max-width:620px){.free-studio-result{padding:15px}.free-studio-actions{flex-direction:column}.free-studio-actions .record-action{justify-content:center;width:100%}}
