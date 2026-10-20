@@ -36,6 +36,18 @@ export function wifiReport(a: WifiAnswers): WifiReport {
       'Essayez un autre site pour écarter une panne limitée à un service.',
       'Si tous les appareils sont touchés, contactez le gestionnaire du réseau ou le fournisseur.'
     ]
+  } else if (invisible && far) {
+    hypothesis = a.scope === 'one'
+      ? 'Signal Wi-Fi faible ou difficulté de réception propre à cet appareil'
+      : 'Couverture Wi-Fi insuffisante dans les zones éloignées'
+    explanation = 'Le nom du réseau disparaît principalement loin du point d’accès. La portée, les obstacles ou les interférences sont des causes plausibles. Une panne du point d’accès reste possible si le réseau disparaît aussi à proximité.'
+    actions = [
+      'Sur le même appareil, vérifiez si le nom du réseau réapparaît en vous rapprochant du routeur.',
+      'Testez un autre appareil dans la même zone éloignée pour comparer la réception.',
+      'Repérez les murs épais, les structures métalliques et les obstacles entre le routeur et les appareils.',
+      'Si possible, placez le point d’accès dans une zone plus centrale, en hauteur et dégagée.',
+      'Si le nom du réseau disparaît aussi près du routeur, faites vérifier le point d’accès par son gestionnaire.'
+    ]
   } else if (invisible) {
     hypothesis = 'Réseau Wi-Fi non détecté ou diffusion intermittente'
     explanation = 'Le réseau disparaît de la liste ou n’est pas détecté. La portée ou le point d’accès peuvent être concernés.'
@@ -83,7 +95,7 @@ export function wifiReport(a: WifiAnswers): WifiReport {
   }
   const body = [
     'ORIENTATION TECHNIQUE — DGIA IT SOLUTIONS',
-    'Diagnostic interactif V1.7',
+    'Diagnostic interactif V1.7.1',
     '',
     'Symptôme : ' + (issues[a.issue] || 'Non précisé'),
     'Appareils : ' + (a.scope === 'several' ? 'Plusieurs' : a.scope === 'one' ? 'Un seul' : 'Non déterminé'),

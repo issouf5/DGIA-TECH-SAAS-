@@ -88,3 +88,12 @@ Le calcul s'effectue dans le navigateur, sans mesure réseau ni API payante.
 Copier reste gratuit et illimité. Enregistrer une demande utilise le quota IT
 habituel. Les autres catégories (ordinateur, imprimante, MikroTik) conservent
 le diagnostic guidé existant. Aucun changement de schéma Supabase.
+
+## V1.7.1 — priorité à la portée du signal
+
+Lorsque le nom du Wi-Fi disparaît **surtout loin du routeur**, le rapport
+privilégie une hypothèse de couverture insuffisante (ou de réception faible
+sur un seul appareil) plutôt qu’une panne du point d’accès. Les étapes
+proposent un test de proximité, un second appareil, une inspection des
+obstacles et une escalade si le réseau disparaît aussi près du routeur.
+Cette orientation reste indicative et gratuite.
