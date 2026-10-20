@@ -108,3 +108,16 @@ la reconnexion Wi-Fi et les éventuels paramètres VPN ou proxy, avant toute
 escalade vers un technicien. La recommandation de contacter le fournisseur
 est réservée aux pannes générales confirmées. Les étapes de comparaison
 ne sont plus répétées. Aucun appel API, changement Supabase ou coût ajouté.
+
+
+## V1.7.3 — détection du réseau sur un appareil isolé
+
+Quand un seul appareil ne détecte plus le réseau Wi-Fi, l'assistant demande
+désormais si un deuxième appareil voit le même réseau. Selon la réponse,
+le rapport distingue un souci probable de réception/configuration locale,
+un problème partagé de couverture/diffusion, ou une cause encore indéterminée.
+Le nombre d'appareils affiché est réévalué lorsque le test comparatif montre
+que deux appareils ne voient pas le réseau. Les conseils répétés sont supprimés.
+
+Le questionnaire et les rapports restent locaux, indicatifs et gratuits.
+Aucune API payante, nouvelle table Supabase ou modification de quotas.

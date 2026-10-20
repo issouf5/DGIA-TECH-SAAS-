@@ -3,6 +3,7 @@ export type WifiAnswers = {
   scope: string
   status: string
   visible: string
+  comparison: string
   distance: string
   notes: string
 }
@@ -16,6 +17,10 @@ export function wifiStages(a: WifiAnswers) {
   if (a.issue === 'drops' || a.issue === 'slow') {
     steps.push('status')
     if (a.status === 'lost') steps.push('visible')
+  }
+  if (a.scope === 'one' &&
+    (a.issue === 'missing' || (a.status === 'lost' && a.visible === 'missing'))) {
+    steps.push('comparison')
   }
   steps.push('distance', 'notes')
   return steps
@@ -54,6 +59,39 @@ export function wifiReport(a: WifiAnswers): WifiReport {
       'Si seul le premier appareil est concerné, vérifiez ses paramètres Wi-Fi et ses éventuels réglages VPN ou proxy.',
       'Si plusieurs appareils sont concernés, observez les voyants Internet du modem ou du routeur.',
       'Contactez le gestionnaire du réseau si une panne générale est confirmée et persiste.'
+    ]
+  } else if (invisible && a.scope === 'one' && a.comparison === 'other_sees') {
+    hypothesis = far
+      ? 'Réception Wi-Fi limitée sur l’appareil concerné'
+      : 'Problème possible de détection Wi-Fi sur cet appareil'
+    explanation = 'Un autre appareil détecte le même réseau au même endroit. Cela oriente vers les paramètres, la compatibilité ou la réception Wi-Fi de l’appareil concerné, sans confirmer une panne.'
+    actions = [
+      'Vérifiez que le mode avion est désactivé et que le Wi-Fi est activé sur l’appareil concerné.',
+      'Désactivez puis réactivez le Wi-Fi sur cet appareil, puis recherchez à nouveau le réseau.',
+      'Si le routeur propose deux noms de réseau distincts, vérifiez si l’appareil détecte la bande 2,4 GHz ou 5 GHz.',
+      'Si le réseau reste invisible, demandez un contrôle des paramètres ou de l’adaptateur Wi-Fi de cet appareil.'
+    ]
+  } else if (invisible && a.scope === 'one' && a.comparison === 'other_missing') {
+    hypothesis = far
+      ? 'Couverture Wi-Fi possiblement insuffisante pour plusieurs appareils'
+      : 'Réseau Wi-Fi potentiellement indisponible pour plusieurs appareils'
+    explanation = 'Un deuxième appareil ne détecte pas non plus le réseau. La difficulté n’est donc pas nécessairement limitée au premier appareil. La portée et la diffusion du point d’accès restent à vérifier.'
+    actions = [
+      'Vérifiez si les deux appareils détectent le réseau en vous rapprochant du routeur.',
+      'Observez les voyants Wi-Fi du routeur ou du point d’accès pendant la panne.',
+      'Si le réseau réapparaît près du routeur, faites vérifier la couverture et les obstacles.',
+      'Si plusieurs appareils ne détectent toujours pas le réseau à proximité, demandez une vérification du point d’accès.'
+    ]
+  } else if (invisible && a.scope === 'one') {
+    hypothesis = far
+      ? 'Réception Wi-Fi insuffisante ou problème propre à l’appareil, à confirmer'
+      : 'Réseau invisible sur un appareil : cause non déterminée'
+    explanation = 'Sans test sur un deuxième appareil, il est impossible de distinguer une difficulté propre au premier appareil d’un problème de diffusion du réseau.'
+    actions = [
+      'Recherchez le même réseau sur un deuxième appareil au même endroit.',
+      'Si le deuxième appareil le détecte, vérifiez les paramètres Wi-Fi du premier.',
+      'Si aucun appareil ne le détecte, vérifiez la diffusion du point d’accès avec son gestionnaire.',
+      'Comparez la visibilité du réseau à proximité du routeur.'
     ]
   } else if (invisible && far) {
     hypothesis = a.scope === 'one'
@@ -106,20 +144,26 @@ export function wifiReport(a: WifiAnswers): WifiReport {
       'Transmettez ces observations à un technicien si nécessaire.'
     ]
   }
-  if (a.scope === 'one' && !offline) actions.unshift('Vérifiez d’abord un autre appareil au même endroit.')
-  if (a.scope === 'unknown' && !offline) actions.unshift('Testez un autre appareil pour connaître l’étendue de la panne.')
+  if (a.scope === 'one' && !offline && !invisible) actions.unshift('Vérifiez d’abord un autre appareil au même endroit.')
+  if (a.scope === 'unknown' && !offline && !invisible) actions.unshift('Testez un autre appareil pour connaître l’étendue de la panne.')
   const issues: Record<string, string> = {
     drops: 'Déconnexions Wi-Fi', offline: 'Wi-Fi sans Internet',
     missing: 'Réseau invisible', slow: 'Connexion lente'
   }
   const body = [
     'ORIENTATION TECHNIQUE — DGIA IT SOLUTIONS',
-    'Diagnostic interactif V1.7.2',
+    'Diagnostic interactif V1.7.3',
     '',
     'Symptôme : ' + (issues[a.issue] || 'Non précisé'),
-    'Appareils : ' + (a.scope === 'several' ? 'Plusieurs' : a.scope === 'one' ? 'Un seul' : 'Non déterminé'),
+    'Appareils : ' + (a.comparison === 'other_missing'
+      ? 'Plusieurs semblent concernés (test comparatif)'
+      : a.scope === 'several' ? 'Plusieurs'
+        : a.scope === 'one' ? 'Un seul déclaré' : 'Non déterminé'),
     a.status ? 'Type de coupure : ' + (a.status === 'lost' ? 'Déconnexion Wi-Fi' : a.status === 'internet' ? 'Wi-Fi connecté sans Internet' : 'Non déterminé') : '',
     a.visible ? 'Nom du réseau : ' + (a.visible === 'visible' ? 'Reste visible' : a.visible === 'missing' ? 'Disparaît' : 'Non vérifié') : '',
+    a.comparison ? 'Test sur un deuxième appareil : ' +
+      (a.comparison === 'other_sees' ? 'Le réseau est visible'
+        : a.comparison === 'other_missing' ? 'Le réseau est également invisible' : 'Non réalisé') : '',
     'Distance : ' + (a.distance === 'far' ? 'Loin du routeur' : a.distance === 'near' ? 'Près du routeur' : a.distance === 'all' ? 'Partout' : 'Non vérifiée'),
     a.notes.trim() ? 'Précisions : ' + a.notes.trim() : '',
     '',

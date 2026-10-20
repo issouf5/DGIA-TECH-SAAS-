@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, ClipboardCheck, RotateCcw } from 'lucide-react'
 import { wifiReport, wifiStages, type WifiAnswers, type WifiReport } from '@/lib/wifi-advice'
 
 const empty: WifiAnswers = {
-  issue: '', scope: '', status: '', visible: '', distance: '', notes: ''
+  issue: '', scope: '', status: '', visible: '', comparison: '', distance: '', notes: ''
 }
 const questions: Record<string, { title: string; options: { id: string; label: string }[] }> = {
   issue: { title: 'Quel problème rencontrez-vous ?', options: [
@@ -28,6 +28,11 @@ const questions: Record<string, { title: string; options: { id: string; label: s
     { id: 'visible', label: 'Oui, il reste visible' },
     { id: 'missing', label: 'Non, il disparaît de la liste' },
     { id: 'unknown', label: 'Je ne sais pas' }
+  ] },
+  comparison: { title: 'Sur un deuxième appareil, le même réseau Wi-Fi est-il visible ?', options: [
+    { id: 'other_sees', label: 'Oui, le deuxième appareil voit le réseau' },
+    { id: 'other_missing', label: 'Non, le réseau est invisible sur les deux appareils' },
+    { id: 'unknown', label: 'Je n’ai pas encore fait ce test' }
   ] },
   distance: { title: 'Où les difficultés se produisent-elles surtout ?', options: [
     { id: 'far', label: 'Loin du routeur' },
@@ -59,9 +64,12 @@ export function WifiDiagnosticWizard({ onReport }: { onReport: (report: WifiRepo
       if (stage === 'issue') {
         next.status = ''
         next.visible = ''
+        next.comparison = ''
         next.distance = ''
       }
-      if (stage === 'status') next.visible = ''
+      if (stage === 'scope') next.comparison = ''
+      if (stage === 'status') { next.visible = ''; next.comparison = '' }
+      if (stage === 'visible') next.comparison = ''
       return next
     })
     setComplete(false)
@@ -77,7 +85,7 @@ export function WifiDiagnosticWizard({ onReport }: { onReport: (report: WifiRepo
   }
   return <div className="wifi-wizard">
     <div className="wifi-wizard-top">
-      <strong>Assistant Wi-Fi interactif — V1.7</strong>
+      <strong>Assistant Wi-Fi interactif — V1.7.3</strong>
       <button type="button" className="record-action" onClick={reset}>
         <RotateCcw size={15}/> Recommencer
       </button>
