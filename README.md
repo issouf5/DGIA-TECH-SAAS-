@@ -132,3 +132,12 @@ désormais « Wi-Fi connecté sans Internet ». Il signale le reclassement,
 orientation technique ciblée sur la réponse la plus précise. Une note
 signale aussi qu'une panne observée près du routeur ne s'explique pas
 uniquement par la distance. Aucun changement de quota ni appel API payant.
+
+
+## Préparation : abonnements mensuels et licences annuelles par logiciel
+
+Le modèle retenu distingue les abonnements mensuels à la plateforme et les
+licences annuelles de 12 mois attribuées à un logiciel précis. Les licences
+à vie sont reportées. La branche de préparation ne met en vente aucune
+licence et n'active aucun paiement ni renouvellement automatique.
+Voir [la spécification du modèle commercial](docs/MODELE-ABONNEMENTS-LICENCES.md).

@@ -7,7 +7,7 @@ export type CatalogPlan = {
 const definitions=[
   {code:'free' as const,label:'Gratuit',description:'Pour découvrir les outils DGIA TECH SAAS.',benefits:['Accès aux trois modules','Espace personnel sécurisé','Historique des demandes et projets']},
   {code:'premium' as const,label:'Premium',description:'Pour les indépendants et les petites structures.',benefits:['Assistance prioritaire (en préparation)','Outils IA avancés (en préparation)','Fonctionnalités de productivité à venir']},
-  {code:'professional' as const,label:'Professionnel',description:'Pour les PME et les besoins professionnels.',benefits:['Automatisations étendues (en préparation)','Accompagnement professionnel (en préparation)','Options de licences à venir']}
+  {code:'professional' as const,label:'Professionnel',description:'Pour les PME et les besoins professionnels.',benefits:['Automatisations étendues (en préparation)','Accompagnement professionnel (en préparation)','Fonctionnalités professionnelles en préparation']}
 ]
 const moduleCodes=['it_solutions','ai_tools','automation']
 export function buildPlanCatalog(plans:PlanRow[]|null,limits:PlanLimitRow[]|null):CatalogPlan[]{
