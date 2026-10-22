@@ -150,16 +150,26 @@ export function wifiReport(a: WifiAnswers): WifiReport {
     drops: 'Déconnexions Wi-Fi', offline: 'Wi-Fi sans Internet',
     missing: 'Réseau invisible', slow: 'Connexion lente'
   }
+  const originalIssue = issues[a.issue] || 'Non précisé'
+  const resolvedIssue = a.status === 'internet'
+    ? 'Wi-Fi connecté sans Internet'
+    : a.status === 'lost' ? 'Déconnexions Wi-Fi' : originalIssue
+  const reclassified = resolvedIssue !== originalIssue
+  const proximityNote = offline && a.distance === 'near'
+    ? 'La difficulté survient même près du routeur : la distance seule ne suffit pas à l’expliquer.'
+    : ''
   const body = [
     'ORIENTATION TECHNIQUE — DGIA IT SOLUTIONS',
-    'Diagnostic interactif V1.7.3',
+    'Diagnostic interactif V1.7.4',
     '',
-    'Symptôme : ' + (issues[a.issue] || 'Non précisé'),
+    'Symptôme retenu : ' + resolvedIssue,
+    reclassified ? 'Symptôme initial : ' + originalIssue : '',
+    reclassified ? 'Précision : le type de coupure indiqué ensuite a été privilégié pour éviter une orientation contradictoire.' : '',
     'Appareils : ' + (a.comparison === 'other_missing'
       ? 'Plusieurs semblent concernés (test comparatif)'
       : a.scope === 'several' ? 'Plusieurs'
         : a.scope === 'one' ? 'Un seul déclaré' : 'Non déterminé'),
-    a.status ? 'Type de coupure : ' + (a.status === 'lost' ? 'Déconnexion Wi-Fi' : a.status === 'internet' ? 'Wi-Fi connecté sans Internet' : 'Non déterminé') : '',
+    a.status === 'unknown' ? 'Type de coupure : Non déterminé' : '',
     a.visible ? 'Nom du réseau : ' + (a.visible === 'visible' ? 'Reste visible' : a.visible === 'missing' ? 'Disparaît' : 'Non vérifié') : '',
     a.comparison ? 'Test sur un deuxième appareil : ' +
       (a.comparison === 'other_sees' ? 'Le réseau est visible'
@@ -169,6 +179,7 @@ export function wifiReport(a: WifiAnswers): WifiReport {
     '',
     'HYPOTHÈSE À CONFIRMER : ' + hypothesis,
     explanation,
+    proximityNote,
     '',
     'VÉRIFICATIONS PRIORITAIRES',
     ...Array.from(new Set(actions)).map((item, i) => (i + 1) + '. ' + item),
@@ -179,6 +190,6 @@ export function wifiReport(a: WifiAnswers): WifiReport {
     'Références :',
     ...wifiSources
   ].filter((item, i, all) => item !== '' || all[i - 1] !== '').join('\n')
-  return { title: ('Diagnostic Wi-Fi — ' + (issues[a.issue] || 'Orientation')).slice(0, 160),
+  return { title: ('Diagnostic Wi-Fi — ' + resolvedIssue).slice(0, 160),
     hypothesis, body: body.slice(0, 5000) }
 }

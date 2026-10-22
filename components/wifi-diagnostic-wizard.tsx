@@ -85,7 +85,7 @@ export function WifiDiagnosticWizard({ onReport }: { onReport: (report: WifiRepo
   }
   return <div className="wifi-wizard">
     <div className="wifi-wizard-top">
-      <strong>Assistant Wi-Fi interactif — V1.7.3</strong>
+      <strong>Assistant Wi-Fi interactif — V1.7.4</strong>
       <button type="button" className="record-action" onClick={reset}>
         <RotateCcw size={15}/> Recommencer
       </button>
@@ -114,6 +114,8 @@ export function WifiDiagnosticWizard({ onReport }: { onReport: (report: WifiRepo
       </div> : <textarea rows={3} maxLength={350} value={answers.notes}
         onChange={event => setAnswers(previous => ({ ...previous, notes: event.target.value }))}
         placeholder="Ex. : plusieurs téléphones se déconnectent dans les pièces éloignées."/>}
+      {stage === 'status' && answers.issue === 'drops' && answers.status === 'internet' &&
+        <p className="field-note" role="status">Vous avez choisi « Déconnexions Wi-Fi », mais précisé que le Wi-Fi reste connecté. Le rapport retiendra « Wi-Fi connecté sans Internet ».</p>}
       <div className="wifi-actions">
         <button type="button" className="record-action" disabled={index === 0}
           onClick={() => setIndex(previous => Math.max(0, previous - 1))}>

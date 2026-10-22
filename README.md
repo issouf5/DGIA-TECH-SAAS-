@@ -121,3 +121,14 @@ que deux appareils ne voient pas le réseau. Les conseils répétés sont suppri
 
 Le questionnaire et les rapports restent locaux, indicatifs et gratuits.
 Aucune API payante, nouvelle table Supabase ou modification de quotas.
+
+
+## V1.7.4 — cohérence entre symptôme initial et coupure observée
+
+Quand l'utilisateur sélectionne « Déconnexions Wi-Fi », puis indique que le
+Wi-Fi reste connecté mais qu'Internet ne fonctionne plus, le rapport retient
+désormais « Wi-Fi connecté sans Internet ». Il signale le reclassement,
+évite de répéter le même symptôme dans deux champs et conserve une
+orientation technique ciblée sur la réponse la plus précise. Une note
+signale aussi qu'une panne observée près du routeur ne s'explique pas
+uniquement par la distance. Aucun changement de quota ni appel API payant.
