@@ -14,7 +14,8 @@ Décision fonctionnelle validée le 22 octobre 2026. Document de préparation ; 
 ### Licence annuelle par logiciel
 - Une licence est associée à **un logiciel/produit DGIA précis**, pas à l'ensemble des modules ou à la plateforme.
 - Durée prévue : **12 mois à compter de l'activation**. Le renouvellement devra être explicitement défini avant la vente.
-- Tarifs : **non définis** ; aucune licence en vente.
+- Premier produit validé : **DGIA Wi-Fi Diagnostic Pro — 18 000 FCFA pour 12 mois**. Aucun autre logiciel ni tarif de licence n'est validé ; aucune licence en vente.
+- Voir la [spécification Wi-Fi Diagnostic Pro](WIFI-DIAGNOSTIC-PRO.md).
 - Une licence ne donne pas automatiquement droit aux API payantes, aux frais d'hébergement ou aux services cloud.
 - Les licences à vie sont reportées à une phase ultérieure.
 

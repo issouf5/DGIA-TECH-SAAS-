@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint:types": "tsc --noEmit"
+    "lint:types": "tsc --noEmit",
+    "test:license": "node --experimental-strip-types --test tests/wifi-pro-catalog.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.7.0",

@@ -141,3 +141,10 @@ licences annuelles de 12 mois attribuées à un logiciel précis. Les licences
 à vie sont reportées. La branche de préparation ne met en vente aucune
 licence et n'active aucun paiement ni renouvellement automatique.
 Voir [la spécification du modèle commercial](docs/MODELE-ABONNEMENTS-LICENCES.md).
+
+
+### DGIA Wi-Fi Diagnostic Pro — préparation
+
+Licence annuelle validée : **18 000 FCFA pour 12 mois** (sans paiement ni vente activés).
+La maquette est accessible dans `/dashboard/it/wifi-pro` sur la branche de préparation.
+Le diagnostic Wi-Fi gratuit n'est pas modifié. Voir `docs/WIFI-DIAGNOSTIC-PRO.md`.
