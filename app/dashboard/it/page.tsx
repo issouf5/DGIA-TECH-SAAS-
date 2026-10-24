@@ -1,4 +1,6 @@
 import './wifi-wizard.css'
+import Link from 'next/link'
+import { WIFI_PRO, formatWifiProPrice } from '@/lib/wifi-pro-catalog'
 import { Network, Router, Wifi, MonitorCog, ClipboardList } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getQuota, type Limit, type Quota } from '@/lib/data'
@@ -16,6 +18,7 @@ export default async function ITPage() {
   const quota=getQuota('it_solutions',limits as Limit[]|null,windows as Quota[]|null)
   return <>
     <div className="module-page-head"><div className="module-page-icon blue"><Network size={26}/></div><div><div className="page-eyebrow">MODULE 01 / INFRASTRUCTURE</div><h1>DGIA IT Solutions</h1><p>Identifiez les premières vérifications à faire, puis organisez vos demandes d’assistance informatique.</p></div></div>
+    <div className="workspace-card"><div className="workspace-card-heading"><div><div className="page-eyebrow">LOGICIEL PROFESSIONNEL · EN PRÉPARATION</div><h2>{WIFI_PRO.productName}</h2><p>Licence annuelle : {formatWifiProPrice()} pour 12 mois. Rapports professionnels, PDF, historique et suivi des incidents sont prévus. Aucun paiement activé.</p></div><Wifi size={22}/></div><Link href="/dashboard/it/wifi-pro" className="record-action">Découvrir la maquette Pro →</Link></div>
     <div className="workspace-layout"><div className="workspace-main">
       <GuidedItDiagnosis quotaAvailable={quota.used < quota.limit}/>
       <div className="workspace-card"><div className="workspace-card-heading"><div><h2>Nouvelle demande d’assistance</h2><p>Le traitement par DGIA sera activé prochainement.</p></div><ClipboardList size={21}/></div><ItForm disabled={quota.used>=quota.limit}/></div>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { WIFI_PRO, formatWifiProPrice } from '@/lib/wifi-pro-catalog'
 import { KeyRound, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
@@ -43,9 +44,17 @@ export default async function LicensesPage() {
     <div className="workspace-card">
       <h2>Licences annuelles par logiciel — en préparation</h2>
       <p>Le modèle retenu prévoit une licence de 12 mois à partir de son activation pour chaque logiciel DGIA concerné. Chaque licence sera attribuée à un produit précis ; elle ne donnera pas automatiquement accès à tous les services de DGIA TECH SAAS.</p>
-      <p>Les licences à vie ne sont pas proposées dans cette première étape. Les tarifs, les modalités de renouvellement et les droits d’utilisation de chaque logiciel devront être validés avant toute commercialisation.</p>
+      <p>Les licences à vie ne sont pas proposées dans cette première étape. Le tarif de Wi-Fi Diagnostic Pro est validé. Les modalités de renouvellement et les droits d’utilisation détaillés devront être définis avant toute commercialisation.</p>
       <p className="muted-note">Aucun achat, paiement ou renouvellement automatique de licence n’est activé actuellement.</p>
       <Link href="/dashboard/abonnements" className="record-action">Voir les abonnements mensuels →</Link>
+    </div>
+
+    <div className="workspace-card">
+      <div className="page-eyebrow">PREMIER LOGICIEL RETENU</div>
+      <h2>{WIFI_PRO.productName}</h2>
+      <p><strong>{formatWifiProPrice()} / 12 mois</strong> à compter de l’activation. Offre en développement, non disponible à l’achat.</p>
+      <p>Rapport professionnel, export PDF, historique des diagnostics et suivi des incidents sont prévus. Le diagnostic gratuit reste accessible.</p>
+      <Link href="/dashboard/it/wifi-pro" className="record-action">Voir la présentation du logiciel →</Link>
     </div>
 
     <div className="workspace-card">

@@ -19,6 +19,8 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Vérifier TypeScript
         run: npm run lint:types
+      - name: Tester les licences annuelles
+        run: npm run test:license
       - name: Compiler Next.js
         run: npm run build
         env:
